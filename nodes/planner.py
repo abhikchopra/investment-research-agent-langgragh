@@ -1,12 +1,14 @@
-from config import *
+from config import PROJECT_ID
+from config import LOCATION
+
 from langchain_google_vertexai import ChatVertexAI
 
 
 llm = ChatVertexAI(
-    model="gemini-2.5-flash"
+    model="gemini-2.5-flash",
+    project=PROJECT_ID,
+    location=LOCATION
 )
-
-
 def planner_node(state):
 
     response = llm.invoke(
