@@ -13,22 +13,28 @@ llm = ChatVertexAI(
 
 def writer_node(state):
 
+    financial_analysis = state.get(
+        "financial_analysis",
+        "No financial analysis performed."
+    )
+
     response = llm.invoke(
         f"""
-        Create a professional
-        investment report.
+        Create a professional investment report.
 
-        Research:
+        Research Notes:
 
         {state["research_notes"]}
 
-        Financial:
+        Financial Analysis:
 
-        {state["financial_analysis"]}
+        {financial_analysis}
 
         Include:
 
         Executive Summary
+
+        Business Overview
 
         Bull Case
 
@@ -36,7 +42,7 @@ def writer_node(state):
 
         Risks
 
-        Recommendation
+        Final Recommendation
         """
     )
 
