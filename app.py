@@ -27,5 +27,27 @@ def analyze(payload: AnalysisRequest):
     )
 
     return {
-        "report": result["report"]
+    "research_plan":
+        result.get(
+            "research_plan",
+            ""
+        ),
+
+    "research_notes":
+        result.get(
+            "research_notes",
+            ""
+        ),
+
+    "financial_analysis":
+        result.get(
+            "financial_analysis",
+            ""
+        ),
+
+    "report":
+        result.get(
+            "report",
+            ""
+        )
     }
