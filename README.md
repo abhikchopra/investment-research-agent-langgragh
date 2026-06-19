@@ -1,14 +1,14 @@
 # Investment Research Agent - LangGraph
 
-A production-oriented investment research workflow built using **LangGraph**, **Vertex AI (Gemini)**, **FastAPI**, **Docker**, and **Google Cloud Run**.
+A production-oriented investment research workflow built using **LangGraph**, **Vertex AI (Gemini)**, **FastAPI**, **Docker**, **Google Cloud Run**, and **LangSmith Observability**.
 
-This project demonstrates how to orchestrate multi-step AI workflows using LangGraph's graph-based architecture while maintaining shared state, dynamic routing, and self-correction patterns.
+This project demonstrates how to orchestrate multi-step AI workflows using LangGraph's graph-based architecture while maintaining shared state, dynamic routing, self-correction patterns, and production-grade observability.
 
 ---
 
 ## Objective
 
-The goal of this repository is to rebuild the Investment Research Agent previously implemented using Google ADK and compare two orchestration approaches:
+The goal of this repository is to rebuild the Investment Research Agent previously implemented using Google ADK and compare two orchestration approaches.
 
 ### Repository 1
 
@@ -17,6 +17,7 @@ Google ADK
 * SequentialAgent
 * Agent-to-Agent orchestration
 * Tool Calling
+* Explainability Layer
 * Cloud Run deployment
 
 ### Repository 2 (This Repository)
@@ -31,6 +32,7 @@ LangGraph
 * FastAPI
 * Docker
 * Cloud Run
+* LangSmith Tracing
 
 ---
 
@@ -115,7 +117,15 @@ Workflow transitions are explicitly defined using LangGraph edges.
 
 Example:
 
-Planner → Research → Financial → Writer
+```text
+Planner
+ ↓
+Research
+ ↓
+Financial
+ ↓
+Writer
+```
 
 Unlike ADK, workflow orchestration is fully controlled by the developer.
 
@@ -129,11 +139,21 @@ Example:
 
 Investment Questions
 
-Research → Financial → Writer
+```text
+Research
+ ↓
+Financial
+ ↓
+Writer
+```
 
 Informational Questions
 
-Research → Writer
+```text
+Research
+ ↓
+Writer
+```
 
 This demonstrates graph-based decision making.
 
@@ -145,7 +165,15 @@ A reviewer node evaluates report quality.
 
 If quality is insufficient:
 
-Reviewer → Research → Writer → Reviewer
+```text
+Reviewer
+ ↓
+Research
+ ↓
+Writer
+ ↓
+Reviewer
+```
 
 This introduces self-correction and iterative improvement.
 
@@ -157,6 +185,47 @@ A retry counter prevents infinite loops and ensures workflow termination.
 
 ---
 
+## LangSmith Observability
+
+This repository integrates LangSmith to provide production-grade tracing and workflow observability.
+
+### Capabilities
+
+* End-to-end execution tracing
+* Prompt inspection
+* Node input/output visibility
+* Workflow debugging
+* Latency monitoring
+* Execution path visualization
+
+### Example Trace
+
+```text
+User Question
+      ↓
+
+Planner
+      ↓
+
+Research
+      ↓
+
+Financial
+      ↓
+
+Writer
+      ↓
+
+Reviewer
+      ↓
+
+Final Response
+```
+
+LangSmith allows inspection of every step, making it easier to understand how the workflow behaves and where failures occur.
+
+---
+
 ## Technology Stack
 
 ### AI & Orchestration
@@ -165,6 +234,10 @@ A retry counter prevents infinite loops and ensures workflow termination.
 * LangChain
 * Vertex AI
 * Gemini 2.5 Flash
+
+### Observability
+
+* LangSmith
 
 ### Backend
 
@@ -181,7 +254,6 @@ A retry counter prevents infinite loops and ensures workflow termination.
 
 * Python 3.12
 * GitHub
-* GitHub Actions
 
 ---
 
@@ -203,9 +275,14 @@ Response:
 
 ```json
 {
+  "research_plan": "...",
+  "research_notes": "...",
+  "financial_analysis": "...",
   "report": "..."
 }
 ```
+
+The additional fields support downstream evaluation frameworks and trajectory-based analysis.
 
 ---
 
@@ -233,7 +310,7 @@ http://127.0.0.1:8000/docs
 
 ## Deployment
 
-Containerized using Docker and deployed to Google Cloud Run.
+Containerized using Docker and deployable to Google Cloud Run.
 
 Key deployment concepts:
 
@@ -249,14 +326,37 @@ Key deployment concepts:
 
 This repository demonstrates the concepts most commonly associated with production LangGraph systems:
 
+### Workflow Orchestration
+
 * State Management
-* Workflow Orchestration
+* Nodes
+* Edges
 * Conditional Routing
 * Reflection Loops
 * Retry Logic
-* Vertex AI Integration
-* FastAPI APIs
-* Docker Containerization
-* Cloud Deployment
 
-The primary purpose of this repository is to understand how LangGraph differs from Google ADK while solving the same business problem.
+### AI Integration
+
+* Vertex AI
+* Gemini 2.5 Flash
+* Prompt Engineering
+
+### API Layer
+
+* FastAPI
+* REST Endpoints
+
+### Infrastructure
+
+* Docker
+* Cloud Run
+* Artifact Registry
+
+### Observability
+
+* LangSmith Tracing
+* Workflow Inspection
+* Prompt Visibility
+* Execution Monitoring
+
+The primary purpose of this repository is to understand how LangGraph differs from Google ADK while solving the same business problem, while also introducing production-grade observability practices through LangSmith.
